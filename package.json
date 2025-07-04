@@ -1,0 +1,33 @@
+{
+  "name": "mcp-server",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Local MCP server exposing web‑fetch tools",
+  "bin": {
+    "mcp-server": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "ts-node src/server.ts",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.2",
+    "chrome-launcher": "^1.2.0",
+    "got": "^14.4.7",
+    "html-to-md": "^0.8.8",
+    "puppeteer": "24.11.2",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/got": "^9.6.12",
+    "@types/node": "^24.0.8",
+    "@types/yargs": "^17.0.33",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@10.6.2+sha512.47870716bea1572b53df34ad8647b42962bc790ce2bf4562ba0f643237d7302a3d6a8ecef9e4bdfc01d23af1969aa90485d4cebb0b9638fa5ef1daef656f6c1b"
+}
