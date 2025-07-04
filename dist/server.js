@@ -4,6 +4,7 @@ import { z } from "zod";
 import { fetchHtml } from "./tools/fetchHtml.js";
 import { fetchPageContent } from "./tools/fetchPageContent.js";
 import { searchGoogle } from "./tools/search.js";
+import { screenshotPage } from "./tools/screenshotPage.js";
 import { closeCachedBrowser } from "./utils/browser.js";
 async function main() {
     const server = new McpServer({ name: "local-web-fetcher", version: "0.2.0" });
@@ -33,6 +34,25 @@ async function main() {
         annotations: { readOnlyHint: true, openWorldHint: true },
     }, async ({ query }) => ({
         content: [{ type: "text", text: await searchGoogle(query) }],
+    }));
+    // screenshot-page tool
+    server.registerTool("screenshot_page", {
+        title: "Take Screenshot",
+        description: "Uses real Chrome with your profile to take a screenshot of a page.",
+        inputSchema: {
+            url: z.string().url(),
+            viewportWidth: z.number().int().positive(),
+            viewportHeight: z.number().int().positive(),
+        },
+        annotations: { readOnlyHint: true, openWorldHint: true },
+    }, async ({ url, viewportWidth, viewportHeight }) => ({
+        content: [
+            {
+                type: "image",
+                mimeType: "image/png",
+                data: (await screenshotPage(url, viewportWidth, viewportHeight)).toString("base64"),
+            },
+        ],
     }));
     // Start stdio transport
     const transport = new StdioServerTransport();

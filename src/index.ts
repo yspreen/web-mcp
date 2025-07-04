@@ -3,6 +3,7 @@ import { hideBin } from "yargs/helpers";
 import { fetchHtml } from "./tools/fetchHtml.js";
 import { fetchPageContent } from "./tools/fetchPageContent.js";
 import { searchGoogle } from "./tools/search.js";
+import { screenshotPage } from "./tools/screenshotPage.js";
 
 yargs(hideBin(process.argv))
   .scriptName("mcp")
@@ -36,6 +37,23 @@ yargs(hideBin(process.argv))
     async (args) => {
       const md = await searchGoogle((args.query as string[]).join(" "));
       console.log(md);
+    }
+  )
+  .command(
+    "screenshot-page <url> <width> <height>",
+    "Take a screenshot of a page",
+    (y) =>
+      y
+        .positional("url", { type: "string", describe: "Target URL" })
+        .positional("width", { type: "number", describe: "Viewport width" })
+        .positional("height", { type: "number", describe: "Viewport height" }),
+    async (args) => {
+      const buffer = await screenshotPage(
+        args.url as string,
+        args.width as number,
+        args.height as number
+      );
+      process.stdout.write(buffer);
     }
   )
   .demandCommand()
