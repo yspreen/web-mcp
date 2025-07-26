@@ -3,7 +3,6 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { fetchHtml } from "./tools/fetchHtml.js";
 import { fetchPageContent } from "./tools/fetchPageContent.js";
-import { searchGoogle } from "./tools/search.js";
 import { screenshotPage } from "./tools/screenshotPage.js";
 import { closeCachedBrowser } from "./utils/browser.js";
 async function main() {
@@ -12,7 +11,7 @@ async function main() {
     server.registerTool("fetch_html", {
         title: "Fetch Raw HTML",
         description: "Return the raw HTML (and inline JS/CSS) for a URL via simple HTTP GET.",
-        inputSchema: { url: z.string().url() },
+        inputSchema: { url: z.string() },
         annotations: { readOnlyHint: true, openWorldHint: true },
     }, async ({ url }) => ({
         content: [{ type: "text", text: await fetchHtml(url) }],
@@ -21,26 +20,31 @@ async function main() {
     server.registerTool("fetch_page_content", {
         title: "Fetch Rendered Page → Markdown",
         description: "Uses real Chrome with your profile; waits for network idle then returns clean Markdown.",
-        inputSchema: { url: z.string().url() },
+        inputSchema: { url: z.string() },
         annotations: { readOnlyHint: true, openWorldHint: true },
     }, async ({ url }) => ({
         content: [{ type: "text", text: await fetchPageContent(url) }],
     }));
-    // search tool
-    server.registerTool("search", {
-        title: "Google Search (Markdown SERP)",
-        description: "Runs a Google search in headless Chrome and returns the resulting page converted to Markdown.",
-        inputSchema: { query: z.string() },
-        annotations: { readOnlyHint: true, openWorldHint: true },
-    }, async ({ query }) => ({
-        content: [{ type: "text", text: await searchGoogle(query) }],
-    }));
+    // // search tool
+    // server.registerTool(
+    //   "search",
+    //   {
+    //     title: "Google Search (Markdown SERP)",
+    //     description:
+    //       "Runs a Google search in headless Chrome and returns the resulting page converted to Markdown.",
+    //     inputSchema: { query: z.string() },
+    //     annotations: { readOnlyHint: true, openWorldHint: true },
+    //   },
+    //   async ({ query }) => ({
+    //     content: [{ type: "text", text: await searchGoogle(query) }],
+    //   })
+    // );
     // screenshot-page tool
     server.registerTool("screenshot_page", {
         title: "Take Screenshot",
         description: "Uses real Chrome with your profile to take a screenshot of a page.",
         inputSchema: {
-            url: z.string().url(),
+            url: z.string(),
             viewportWidth: z.number().int().positive(),
             viewportHeight: z.number().int().positive(),
         },
